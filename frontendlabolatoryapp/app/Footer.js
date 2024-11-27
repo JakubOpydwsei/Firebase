@@ -3,7 +3,7 @@ function Footer() {
     <>
       <footer className="footer footer-center text-content p-10">
         <aside>
-          <img src="WSEI.png" alt="WSEI logo" className="w-40"/>
+          <img src="../../../WSEI.png" alt="WSEI logo" className="w-40"/>
           <p className="font-bold">
             Student WSEI
           </p>

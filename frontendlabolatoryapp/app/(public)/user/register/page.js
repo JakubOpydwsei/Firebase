@@ -1,17 +1,40 @@
 "use client";
-
+import { sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "@/app/lib/firebase";
+import { useAuth } from "@/app/lib/AuthContext";
 import { useForm } from "react-hook-form";
+import { getAuth } from "firebase/auth";
+
+
 
 function Register() {
+
+  // const { user} = useAuth();
+  
+  // if (user) {
+  //   return null;
+  // }
+  
+  // const auth = getAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,  // Destructure watch here
+    watch,
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    console.log(data)
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+
+        console.log("User registered!");
+        sendEmailVerification(auth.currentUser)(() => {
+            console.log("Email verification send!");
+            redirect("/user/verify");
+      })
+
   };
 
   return (
