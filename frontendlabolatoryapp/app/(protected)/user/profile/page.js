@@ -16,17 +16,22 @@ function UserProfile() {
           <p>
             <strong>Email:</strong> {user.email || "Not available"}
           </p>
-          {user.photoURL && (
-            <div className="mt-2">
-              <strong>Photo:</strong>
-              <br />
-              <div className="avatar mt-2">
-                <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img src={user.photoURL} alt="Profile" />
+
+          <div className="mt-2">
+            <strong>Photo:</strong>
+            {user.photoURL ? (
+              <>
+                <br />
+                <div className="avatar mt-2">
+                  <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                    <img src={user.photoURL} alt="Profile" />
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              </>
+            ) : (
+              " Not set"
+            )}
+          </div>
         </div>
       )}
       <Link className="btn btn-primary" href="/user/profile/edit">
