@@ -29,10 +29,13 @@ function Register() {
         });
       })
       .catch((error) => {
-        console.log(error.message);
         const errorCode = error.code;
-        setErrorMessage(error.message);
-        console.error(errorCode,errorMessage);
+        if (errorCode === "auth/email-already-in-use") {
+          setErrorMessage("The email address is already in use. Please try another one or try to log in using this email.");
+        } else {
+          setErrorMessage("Register process has failed!");
+        }
+        console.error(errorCode, error.message);
       });
   };
 
@@ -43,7 +46,7 @@ function Register() {
   return (
     <>
       <div className="flex items-center justify-center bg-base-200">
-        <div className="card w-96 bg-base-200 shadow-xl">
+      <div className="card w-96 bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Register</h2>
             {errorMessage && (
