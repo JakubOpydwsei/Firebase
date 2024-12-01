@@ -1,5 +1,5 @@
 'use client'
-import { useAuth } from "@/app/lib/firebase/AuthContext";
+import { useAuth } from "../lib/AuthContext";
 import { useLayoutEffect } from "react";
 import { redirect } from 'next/navigation';
 import { usePathname } from 'next/navigation';

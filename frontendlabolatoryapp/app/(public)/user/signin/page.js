@@ -8,8 +8,6 @@ import { getAuth } from "firebase/auth";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
-import app from "@/app/lib/firebase";
-
 function login() {
   const auth = getAuth();
   const params = useSearchParams();
@@ -26,7 +24,11 @@ function login() {
       .then(() => {
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
-            if (!returnUrl || typeof returnUrl !== 'string' || returnUrl.trim() === '') {
+            if (
+              !returnUrl ||
+              typeof returnUrl !== "string" ||
+              returnUrl.trim() === ""
+            ) {
               router.push("/");
             } else {
               router.push(returnUrl);
@@ -35,7 +37,7 @@ function login() {
           .catch((error) => {
             const errorCode = error.code;
             setErrorMessage(error.message);
-            console.error(errorCode,errorMessage);
+            console.error(errorCode, errorMessage);
           });
       })
       .catch((error) => {
@@ -64,7 +66,7 @@ function login() {
                     d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span>{errorMessage}</span>
+                <span>Error has occurred during login process</span>
               </div>
             )}
             <form onSubmit={onSubmit}>

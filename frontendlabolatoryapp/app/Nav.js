@@ -1,11 +1,11 @@
-
+import Link from "next/link";
 import { BsFillBasket2Fill } from "react-icons/bs";
 function Nav() {
   return (
     <>
       <ul className="menu rounded-box w-56">
         <li>
-          <a>
+          <Link href="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -21,10 +21,10 @@ function Nav() {
               />
             </svg>
             Home
-          </a>
+          </Link>
         </li>
         <li>
-          <a>
+          <Link href="/#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -40,10 +40,10 @@ function Nav() {
               />
             </svg>
             Info
-          </a>
+          </Link>
         </li>
         <li>
-          <a>
+          <Link href="/#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -59,13 +59,13 @@ function Nav() {
               />
             </svg>
             ITEAM
-          </a>
+          </Link>
         </li>
         <li>
-          <a>
+          <Link href="/#">
             <BsFillBasket2Fill />
             Basket
-          </a>
+          </Link>
         </li>
       </ul>
     </>

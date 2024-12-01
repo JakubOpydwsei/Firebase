@@ -21,6 +21,8 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
+
   return (
     <html lang="en">
       <body
@@ -34,6 +36,7 @@ export default function RootLayout({ children }) {
 
             <main className="flex-1 p-4 bg-base-200 place-items-center">
             <AuthProvider>{children}</AuthProvider>
+            
             </main>
           </div>
 

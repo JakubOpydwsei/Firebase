@@ -1,22 +1,16 @@
 "use client";
 import { sendEmailVerification } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "@/app/lib/firebase";
 import { useAuth } from "@/app/lib/AuthContext";
 import { useForm } from "react-hook-form";
 import { getAuth } from "firebase/auth";
-
-
+import { redirect } from "next/navigation";
+import { useState } from "react";
 
 function Register() {
-
-  // const { user} = useAuth();
-  
-  // if (user) {
-  //   return null;
-  // }
-  
-  // const auth = getAuth();
+  const { user } = useAuth();
+  const [errorMessage, setErrorMessage] = useState(null);
+  const auth = getAuth();
 
   const {
     register,
@@ -26,16 +20,25 @@ function Register() {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data)
     createUserWithEmailAndPassword(auth, data.email, data.password)
-
+      .then((userCredential) => {
         console.log("User registered!");
-        sendEmailVerification(auth.currentUser)(() => {
-            console.log("Email verification send!");
-            redirect("/user/verify");
+        sendEmailVerification(auth.currentUser).then(() => {
+          console.log("Email verification send!");
+          redirect("/user/verify");
+        });
       })
-
+      .catch((error) => {
+        console.log(error.message);
+        const errorCode = error.code;
+        setErrorMessage(error.message);
+        console.error(errorCode,errorMessage);
+      });
   };
+
+  if (user) {
+    return null;
+  }
 
   return (
     <>
@@ -43,8 +46,26 @@ function Register() {
         <div className="card w-96 bg-base-200 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Register</h2>
+            {errorMessage && (
+              <div role="alert" className="alert alert-error mt-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 shrink-0 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {/* <span>Error has occurred during register process</span> */}
+                <span>{errorMessage}</span>
+              </div>
+            )}
             <form onSubmit={handleSubmit(onSubmit)}>
-              {/* Email Field */}
               <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Email</span>
@@ -62,7 +83,7 @@ function Register() {
                 )}
               </div>
 
-              {/* Password Field */}
+
               <div className="form-control w-full mt-4">
                 <label className="label">
                   <span className="label-text">Password</span>
@@ -86,7 +107,6 @@ function Register() {
                 )}
               </div>
 
-              {/* Confirm Password Field */}
               <div className="form-control w-full mt-4">
                 <label className="label">
                   <span className="label-text">Confirm Password</span>
@@ -108,7 +128,6 @@ function Register() {
                 )}
               </div>
 
-              {/* Submit Button */}
               <div className="form-control mt-6">
                 <button type="submit" className="btn btn-primary">
                   Register
