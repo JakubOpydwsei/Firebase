@@ -2,16 +2,22 @@
 import { useAuth } from "@/app/lib/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/app/lib/firebase";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function VerifyEmail() {
   const { user } = useAuth();
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (user && !user.emailVerified) {
-      signOut(auth).catch((error) => {
-        console.log(error);
-      });
+    if (user) {
+      // Zapisz adres e-mail w stanie lokalnym
+      setEmail(user.email);
+      if (!user.emailVerified) {
+        signOut(auth)
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
   }, [user]);
 
@@ -20,7 +26,7 @@ function VerifyEmail() {
       {!user?.emailVerified ? (
         <h1>
           Email not verified. Please verify by clicking the link sent to your
-          address {user?.email}.
+          address {email}.
         </h1>
       ) : (
         <h1>Your email is verified!</h1>
