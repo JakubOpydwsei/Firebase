@@ -5,6 +5,8 @@ import { useAuth } from "@/app/lib/AuthContext";
 import { updateProfile } from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { db } from "@/app/lib/firebase";
+import { collection, addDoc, setDoc, doc } from 'firebase/firestore'
 
 function EditProfile() {
   const [error, setError] = useState(null);
@@ -27,7 +29,7 @@ function EditProfile() {
     }
   }, [user, reset]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     updateProfile(user, {
       displayName: data.displayName,
       photoURL: data.photoURL,
@@ -36,10 +38,24 @@ function EditProfile() {
         console.log("Profile updated");
         router.push("/user/profile")
       })
-      .catch((error) => {
-        setError(error.message);
+      .catch((e) => {
+        setError(e.message);
       });
-  };
+
+      try {
+        const docRef = await setDoc(doc(db, "users", user?.uid), {
+          address: {
+            city: data.city, 
+            street: data.street, 
+            zipCode: data.zipCode 
+          }
+        });
+        console.log("Document written with ID: ", docRef?.uid);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    };
+
   return (
     <>
       {error && (
@@ -102,6 +118,44 @@ function EditProfile() {
         </div>
 
         <div className="form-control">
+          <label className="label">
+            <span>City</span>
+          </label>
+          <input
+          type="text"
+          {...register("city", {
+            required: "City is required",
+          })}
+          className={`input input-bordered w-full`}/>
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span>Street</span>
+          </label>
+          <input
+          type="text"
+          {...register("street", {
+            required: "Street is required",
+          })}
+          className={`input input-bordered w-full`}
+          />
+        </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span>zipCode</span>
+          </label>
+          <input
+          type="text"
+          {...register("zipCode", {
+            required: "ZipCode is required",
+          })}
+          className={`input input-bordered w-full`}
+          />
+        </div>
+
+        <div className="form-control">
           <button type="submit" className="btn btn-primary w-full">
             Update Profile
           </button>
@@ -110,5 +164,4 @@ function EditProfile() {
     </>
   );
 }
-
 export default EditProfile;

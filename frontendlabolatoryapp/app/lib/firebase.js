@@ -1,10 +1,9 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore"
 
-// Your web app's Firebase configuration
-// console.log(process.env.NEXT_PUBLIC_API_KEY)
+
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
@@ -16,8 +15,6 @@ const firebaseConfig = {
   };
   
 
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 console.log("Firebase app initialized:", app);
@@ -27,3 +24,4 @@ if (typeof window !== "undefined" && isSupported()) {
 }
 
 export {app,auth};
+export const db = getFirestore(app);
