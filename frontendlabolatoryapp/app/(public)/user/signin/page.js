@@ -66,7 +66,6 @@ function Login() {
             </div>
           )}
           <form onSubmit={onSubmit}>
-            {/* Email Field */}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -80,7 +79,6 @@ function Login() {
               />
             </div>
 
-            {/* Password Field */}
             <div className="form-control w-full mt-4">
               <label className="label">
                 <span className="label-text">Password</span>
@@ -94,7 +92,6 @@ function Login() {
               />
             </div>
 
-            {/* Submit Button */}
             <div className="form-control mt-6">
               <button
                 type="submit"

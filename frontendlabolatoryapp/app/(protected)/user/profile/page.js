@@ -1,9 +1,27 @@
 "use client";
 import { useAuth } from "@/app/lib/AuthContext";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "@/app/lib/firebase";
 
 function UserProfile() {
   const { user } = useAuth();
+  
+  const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    const fetchUserAddress = async () => {
+      if (!user?.uid) return;
+
+      const snapshot = await getDoc(doc(db, "users", user.uid));
+      setAddress(snapshot.data().address || "Address not set");
+    };
+
+    fetchUserAddress();
+  }, [user?.uid]);
+
+  
 
   return (
     <>
@@ -32,6 +50,9 @@ function UserProfile() {
               " Not set"
             )}
           </div>
+          <h2><strong>City: </strong> {address.city || "Not set"}</h2>
+          <h2><strong>Street: </strong> {address.street || "Not set"}</h2>
+          <h2><strong>ZipCode: </strong> {address.zipCode || "Not set"}</h2>
         </div>
       )}
       <Link className="btn btn-primary" href="/user/profile/edit">

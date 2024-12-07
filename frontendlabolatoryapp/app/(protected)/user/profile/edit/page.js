@@ -6,10 +6,11 @@ import { updateProfile } from "firebase/auth";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/app/lib/firebase";
-import { collection, addDoc, setDoc, doc } from 'firebase/firestore'
+import { collection, addDoc, setDoc, getDoc, doc } from "firebase/firestore";
 
 function EditProfile() {
   const [error, setError] = useState(null);
+  const [address, setAddress] = useState("");
   const { user } = useAuth();
   const router = useRouter();
 
@@ -21,13 +22,26 @@ function EditProfile() {
   } = useForm();
 
   useEffect(() => {
-    if (user) {
-      reset({
-        displayName: user.displayName || "",
-        photoURL: user.photoURL || "",
-      });
-    }
-  }, [user, reset]);
+    const fetchUserAddress = async () => {
+      if (!user?.uid) return;
+
+      const snapshot = await getDoc(doc(db, "users", user.uid));
+      setAddress(snapshot.data().address || "Address not set");
+    };
+
+    fetchUserAddress();
+  }, [user?.uid]);
+
+  useEffect(() => {
+    reset({
+      city: address.city || "",
+      street: address.street || "",
+      zipCode: address.zipCode || "",
+      displayName: user.displayName || "",
+      photoURL: user.photoURL || "",
+    });
+  }, [address, user]);
+
 
   const onSubmit = async (data) => {
     updateProfile(user, {
@@ -36,25 +50,25 @@ function EditProfile() {
     })
       .then(() => {
         console.log("Profile updated");
-        router.push("/user/profile")
+        router.push("/user/profile");
       })
       .catch((e) => {
         setError(e.message);
       });
 
-      try {
-        const docRef = await setDoc(doc(db, "users", user?.uid), {
-          address: {
-            city: data.city, 
-            street: data.street, 
-            zipCode: data.zipCode 
-          }
-        });
-        console.log("Document written with ID: ", docRef?.uid);
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
-    };
+    try {
+      const docRef = await setDoc(doc(db, "users", user?.uid), {
+        address: {
+          city: data.city,
+          street: data.street,
+          zipCode: data.zipCode,
+        },
+      });
+      console.log("Document written with ID: ", docRef?.uid);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
 
   return (
     <>
@@ -122,11 +136,12 @@ function EditProfile() {
             <span>City</span>
           </label>
           <input
-          type="text"
-          {...register("city", {
-            required: "City is required",
-          })}
-          className={`input input-bordered w-full`}/>
+            type="text"
+            {...register("city", {
+              required: "City is required",
+            })}
+            className={`input input-bordered w-full`}
+          />
         </div>
 
         <div className="form-control">
@@ -134,11 +149,11 @@ function EditProfile() {
             <span>Street</span>
           </label>
           <input
-          type="text"
-          {...register("street", {
-            required: "Street is required",
-          })}
-          className={`input input-bordered w-full`}
+            type="text"
+            {...register("street", {
+              required: "Street is required",
+            })}
+            className={`input input-bordered w-full`}
           />
         </div>
 
@@ -147,11 +162,11 @@ function EditProfile() {
             <span>zipCode</span>
           </label>
           <input
-          type="text"
-          {...register("zipCode", {
-            required: "ZipCode is required",
-          })}
-          className={`input input-bordered w-full`}
+            type="text"
+            {...register("zipCode", {
+              required: "ZipCode is required",
+            })}
+            className={`input input-bordered w-full`}
           />
         </div>
 
