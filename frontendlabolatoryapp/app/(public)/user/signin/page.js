@@ -1,21 +1,22 @@
-"use client";
-import {
-  signInWithEmailAndPassword,
-  setPersistence,
-  browserSessionPersistence,
-} from "firebase/auth";
-import { getAuth } from "firebase/auth";
+"use client"; // Ensure this is a client-side component
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
+// Wrap the component in Suspense to handle client-side hooks like useSearchParams
 function Login() {
+  const [isClient, setIsClient] = useState(false); // To check if it's running on the client
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth();
   const params = useSearchParams();
   const router = useRouter();
   const returnUrl = params.get("returnUrl");
 
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    setIsClient(true); // Update the client-side flag after mounting
+  }, []);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -41,6 +42,10 @@ function Login() {
         console.error("Error during login:", error.message);
       });
   };
+
+  if (!isClient) {
+    return <div>Loading...</div>; // Render a fallback until the component is mounted
+  }
 
   return (
     <div className="flex items-center justify-center bg-base-200">
@@ -108,4 +113,11 @@ function Login() {
   );
 }
 
-export default Login;
+// Wrap the Login component in Suspense for proper client-side handling
+export default function SuspenseLogin() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Login />
+    </Suspense>
+  );
+}

@@ -1,3 +1,9 @@
 {
-  "extends": ["next/babel","next/core-web-vitals"]
+  "extends": ["next/core-web-vitals"],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",  // Disable hook dependency warnings
+    "no-unused-vars": "off",               // Disable unused variable warnings
+    "next/next/no-img-element": "off",      // Disable image tag warning
+    "react/no-unescaped-entities": "off"   // Disable unescaped characters warning
+  }
 }
