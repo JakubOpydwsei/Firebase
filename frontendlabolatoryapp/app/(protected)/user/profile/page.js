@@ -27,7 +27,7 @@ function UserProfile() {
     <>
       {user && (
         <div className="mt-6 p-4 bg-base-300 text-center space-y-2 rounded-lg shadow">
-          <h2 className="text-lg font-bold">Your Profile</h2>
+          <h1 className="text-lg font-bold">Your Profile</h1>
           <p>
             <strong>Display Name:</strong> {user.displayName || "Not set"}
           </p>
