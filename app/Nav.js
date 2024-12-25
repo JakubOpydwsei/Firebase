@@ -62,7 +62,7 @@ function Nav() {
           </Link>
         </li>
         <li>
-          <Link href="/#">
+          <Link href="/user/cart">
             <BsFillBasket2Fill />
             Basket
           </Link>
