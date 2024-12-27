@@ -20,8 +20,11 @@ function Cart() {
   if (!user || !user.uid) {
     return <p>Brak użytkownika, nie można załadować koszyka.</p>;
   }
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountPercent, setDiscountPercent] = useState(0); // Procent zniżki
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
   // //   Dodanie produktów do koszyka
   // const cart = doc(db, "carts", "xNaMoZxB8RLoKAw2UTKy");
   // const userRef = doc(db, "users", user.uid);
@@ -95,6 +98,18 @@ function Cart() {
   // }, [user]);
 
   ///////////////////////////////////////////////////////////////
+
+  const handleDiscountCodeChange = (event) => {
+    setDiscountCode(event.target.value);
+  };
+
+  const applyDiscount = () => {
+    if (discountCode === "DISCOUNT10") {
+      setDiscountPercent(10);
+    } else {
+      setDiscountPercent(0);
+    }
+  };
 
   const updateQuantity = (productId, change, relatedProductId) => {
     console.log("updateQuantity called with:", {
@@ -317,10 +332,27 @@ function Cart() {
       ) : (
         <p>Obecnie koszyk jest pusty</p>
       )}
+      <div className="mt-6">
+        <label htmlFor="discountCode" className="block">Kod zniżkowy:</label>
+        <input
+          id="discountCode"
+          type="text"
+          value={discountCode}
+          onChange={handleDiscountCodeChange}
+          className="border p-2"
+        />
+        <button
+          onClick={applyDiscount}
+          className="ml-2 bg-blue-500 text-white p-2"
+        >
+          Zastosuj
+        </button>
+      </div>
+
       <h2 className="text-2xl font-bold text-center mt-6">
         Łączna cena koszyka: 
         <span className="text-green-300">
-        {" " + totalPrice.toFixed(2)}
+          {" " + totalPrice.toFixed(2) * (1 - (discountPercent / 100))}
         </span> zł
       </h2>
 
