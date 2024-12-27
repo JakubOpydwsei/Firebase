@@ -11,6 +11,7 @@ import {
   getDoc,
   updateDoc,
   setDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import Product from "./product";
 
@@ -230,6 +231,24 @@ function Cart() {
     }
   };
 
+  const removeAllProductsFromFirestore = async () => {
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const q = query(collection(db, "carts"), where("user", "==", userRef));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const cartRef = querySnapshot.docs[0].ref;
+        await deleteDoc(cartRef);
+        console.log("Koszyk został usunięty z Firestore.");
+      } else {
+        console.log("Nie znaleziono koszyka dla tego użytkownika.");
+      }
+    } catch (error) {
+      console.error("Błąd podczas usuwania koszyka z Firestore:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchCartData = async () => {
       try {
@@ -343,7 +362,7 @@ function Cart() {
         />
         <button
           onClick={applyDiscount}
-          className="ml-2 bg-blue-500 text-white p-2"
+          className="btn ml-2 bg-blue-500 text-white p-2"
         >
           Zastosuj
         </button>
@@ -355,6 +374,13 @@ function Cart() {
           {" " + totalPrice.toFixed(2) * (1 - (discountPercent / 100))}
         </span> zł
       </h2>
+      <hr/>
+      <button
+      onClick={removeAllProductsFromFirestore}
+      className="btn bg-red-500 text-white p-2 mt-4"
+      >
+        Usuń wszystkie produkty
+      </button>
 
     </div>
   );
