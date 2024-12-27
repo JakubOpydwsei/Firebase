@@ -21,7 +21,7 @@ function Cart() {
     return <p>Brak użytkownika, nie można załadować koszyka.</p>;
   }
   const [products, setProducts] = useState([]);
-
+  const [totalPrice, setTotalPrice] = useState(0);
   // //   Dodanie produktów do koszyka
   // const cart = doc(db, "carts", "xNaMoZxB8RLoKAw2UTKy");
   // const userRef = doc(db, "users", user.uid);
@@ -157,7 +157,7 @@ function Cart() {
       if (!querySnapshot.empty) {
         const cartRef = querySnapshot.docs[0].ref;
         const cartData = querySnapshot.docs[0].data();
-        console.log(cartData);
+        // console.log(cartData);
         // console.log(productId);
         // console.log(relatedProductId);
         const updatedItems = cartData.items.map((item) => {
@@ -266,6 +266,42 @@ function Cart() {
     fetchCartData();
   }, [user]);
 
+  useEffect(() => {
+    const calculateTotalPrice = async () => {
+      try {
+        let total = 0;
+
+        for (const product of products) {
+          if (product.price && product.quantity) {
+            total += product.price * product.quantity;
+          }
+
+          for (const related of product.relatedProducts) {
+            const relatedProductId = related._key.path.segments[6];
+            const relatedDoc = await getDoc(
+              doc(db, "products", relatedProductId)
+            );
+
+            if (relatedDoc.exists()) {
+              const relatedData = relatedDoc.data();
+
+              if (relatedData.price && related.quantity) {
+                total += relatedData.price * related.quantity;
+              }
+            }
+          }
+        }
+
+        setTotalPrice(Number(total.toFixed(2)));
+      } catch (error) {
+        console.error("Błąd podczas obliczania łącznej ceny:", error);
+        setTotalPrice(0);
+      }
+    };
+
+    calculateTotalPrice();
+  }, [products]);
+
   return (
     <div>
       <h1>Produkty w koszyku</h1>
@@ -281,6 +317,13 @@ function Cart() {
       ) : (
         <p>Obecnie koszyk jest pusty</p>
       )}
+      <h2 className="text-2xl font-bold text-center mt-6">
+        Łączna cena koszyka: 
+        <span className="text-green-300">
+        {" " + totalPrice.toFixed(2)}
+        </span> zł
+      </h2>
+
     </div>
   );
 }
