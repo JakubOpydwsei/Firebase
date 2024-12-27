@@ -12,15 +12,13 @@ import {
   updateDoc,
   setDoc,
   deleteDoc,
+  deleteField,
 } from "firebase/firestore";
 import Product from "./product";
 
 function Cart() {
   const { user } = useAuth();
 
-  if (!user || !user.uid) {
-    return <p>Brak użytkownika, nie można załadować koszyka.</p>;
-  }
   const [discountCode, setDiscountCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0); // Procent zniżki
   const [products, setProducts] = useState([]);
@@ -239,8 +237,11 @@ function Cart() {
   
       if (!querySnapshot.empty) {
         const cartRef = querySnapshot.docs[0].ref;
-        await deleteDoc(cartRef);
+        console.log(cartRef)
+        // await deleteDoc(cartRef);
+        await updateDoc(cartRef, { items: deleteField() });
         console.log("Koszyk został usunięty z Firestore.");
+        window.location.reload();
       } else {
         console.log("Nie znaleziono koszyka dla tego użytkownika.");
       }
@@ -250,6 +251,9 @@ function Cart() {
   };
 
   useEffect(() => {
+    if (!user || !user.uid) {
+      return;
+    }
     const fetchCartData = async () => {
       try {
         const userRef = doc(db, "users", user.uid);
