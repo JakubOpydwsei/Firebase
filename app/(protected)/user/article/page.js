@@ -11,24 +11,20 @@ function Article() {
 
   useEffect(() => {
     const fetchArticles = async () => {
-        if (user?.uid) {
-            // Tworzymy referencję do użytkownika w kolekcji 'users'
-            const userRef = doc(db, "users", user.uid);
-    
-            // Tworzymy zapytanie z warunkiem "where" na referencję użytkownika
-            const q = query(
-              collection(db, "articles"),
-              where("user", "==", userRef) // Porównujemy referencję użytkownika
-            );
-    
-            const querySnapshot = await getDocs(q);
-            const articleList = querySnapshot.docs.map((doc) => doc.data());
-            setArticles(articleList);
-          }
-        };
+      if (user?.uid) {
+        const userRef = doc(db, "users", user.uid);
+        const q = query(
+          collection(db, "articles"),
+          where("user", "==", userRef)
+        );
+
+        const querySnapshot = await getDocs(q);
+        const articleList = querySnapshot.docs.map((doc) => doc.data());
+        setArticles(articleList);
+      }
+    };
     fetchArticles();
   }, []);
-//   console.log(articles);
 
   return (
     <>

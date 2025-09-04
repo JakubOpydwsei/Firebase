@@ -7,7 +7,7 @@ import { db } from "@/app/lib/firebase";
 
 function UserProfile() {
   const { user } = useAuth();
-  
+
   const [address, setAddress] = useState("");
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function UserProfile() {
     fetchUserAddress();
   }, [user?.uid]);
 
-  
+
 
   return (
     <>
@@ -53,11 +53,13 @@ function UserProfile() {
           <h2><strong>City: </strong> {address.city || "Not set"}</h2>
           <h2><strong>Street: </strong> {address.street || "Not set"}</h2>
           <h2><strong>ZipCode: </strong> {address.zipCode || "Not set"}</h2>
+          <div className="pt-6">
+            <Link className="btn btn-primary" href="/user/profile/edit">
+              Edit profile
+            </Link>
+          </div>
         </div>
       )}
-      <Link className="btn btn-primary" href="/user/profile/edit">
-        Edit profile
-      </Link>
     </>
   );
 }

@@ -20,11 +20,11 @@ function Cart() {
   const { user } = useAuth();
 
   const [discountCode, setDiscountCode] = useState("");
-  const [discountPercent, setDiscountPercent] = useState(0); // Procent zniżki
+  const [discountPercent, setDiscountPercent] = useState(0);
   const [products, setProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [finalPrice, setFinalPrice] = useState(0);
-  // //   Dodanie produktów do koszyka
+  
+  // //   Add products do cart
   // const cart = doc(db, "carts", "xNaMoZxB8RLoKAw2UTKy");
   // const userRef = doc(db, "users", user.uid);
   // const product1 = doc(db, "products", "4bEBlm22yjyff4qW7t2X"); //Telefon
@@ -119,15 +119,13 @@ function Cart() {
 
     setProducts((prevProducts) => {
       return prevProducts.map((product) => {
-        // Zmiana ilości lda głównego produktu
         if (product.id === productId && !relatedProductId) {
           const updatedQuantity = Math.max(0, product.quantity + change);
           console.log("Updating main product quantity:", updatedQuantity);
-          updateProductInFirestore(productId, null, updatedQuantity); // Aktualizacja w Firestore
+          updateProductInFirestore(productId, null, updatedQuantity);
           return { ...product, quantity: updatedQuantity };
         }
 
-        // Zmiana ilości dla powiązanego produktu
         if (product.id === productId && relatedProductId) {
           const updatedRelatedProducts = product.relatedProducts.map(
             (relatedProduct) => {
@@ -141,7 +139,7 @@ function Cart() {
                   productId,
                   relatedProductId,
                   updatedQuantity
-                ); // Aktualizacja w Firestore
+                );
                 return { ...relatedProduct, quantity: updatedQuantity };
               }
               return relatedProduct;
@@ -167,15 +165,10 @@ function Cart() {
       const userRef = doc(db, "users", user.uid);
       const q = query(collection(db, "carts"), where("user", "==", userRef));
       const querySnapshot = await getDocs(q);
-      // console.log(querySnapshot);
       if (!querySnapshot.empty) {
         const cartRef = querySnapshot.docs[0].ref;
         const cartData = querySnapshot.docs[0].data();
-        // console.log(cartData);
-        // console.log(productId);
-        // console.log(relatedProductId);
         const updatedItems = cartData.items.map((item) => {
-          // console.log(item.productId._key.path.segments[6])
           if (item.productId._key.path.segments[6] === productId) {
             if (relatedProductId) {
               item.relatedProducts = item.relatedProducts.map(
@@ -215,14 +208,12 @@ function Cart() {
         const cartRef = querySnapshot.docs[0].ref;
         const cartData = querySnapshot.docs[0].data();
 
-        // console.log(cartData.items[0].productId._key.path.segments[6]);
         const updatedItems = cartData.items.filter(
           (item) => item.productId._key.path.segments[6] !== productId
         );
-        // console.log(productId);
 
         await updateDoc(cartRef, { items: updatedItems });
-        console.log("Produkt został usunięty z koszyka w Firestore.");
+        // console.log("Produkt został usunięty z koszyka w Firestore.");
       }
     } catch (error) {
       console.error("Błąd podczas usuwania produktu z Firestore:", error);
@@ -237,13 +228,12 @@ function Cart() {
   
       if (!querySnapshot.empty) {
         const cartRef = querySnapshot.docs[0].ref;
-        console.log(cartRef)
-        // await deleteDoc(cartRef);
+        // console.log(cartRef)
         await updateDoc(cartRef, { items: deleteField() });
-        console.log("Koszyk został usunięty z Firestore.");
+        // console.log("Koszyk został usunięty z Firestore.");
         window.location.reload();
       } else {
-        console.log("Nie znaleziono koszyka dla tego użytkownika.");
+        // console.log("Nie znaleziono koszyka dla tego użytkownika.");
       }
     } catch (error) {
       console.error("Błąd podczas usuwania koszyka z Firestore:", error);
@@ -259,22 +249,15 @@ function Cart() {
         const userRef = doc(db, "users", user.uid);
         const q = query(collection(db, "carts"), where("user", "==", userRef));
         const querySnapshot = await getDocs(q);
-        // console.log(querySnapshot.docs[0].data().items[0].productId._key.path.segments[6]);
 
         if (!querySnapshot.empty) {
           const cartData = querySnapshot.docs[0].data();
           const items = cartData.items || [];
-          // console.log(items)
           const productDetails = await Promise.all(
             items.map(async (item) => {
               const productId =item.productId._key.path.segments[6]
               const productDoc = await getDoc(doc(db, "products", productId));
               const productData = productDoc.data();
-
-              // console.log(item.relatedProducts[0].id._key.path.segments[6])
-              // console.log(item.relatedProducts)
-              // console.log(productData.relatedProducts)
-
 
               const relatedProducts = productData.relatedProducts.map(
                 (related) => ({

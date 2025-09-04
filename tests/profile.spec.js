@@ -6,9 +6,9 @@ test("login and profile test", async ({ page }) => {
 
   await expect(page).toHaveURL("http://localhost:3000/user/signin");
   await expect(page.locator("h2")).toContainText("Login");
-  // Wypełnienie formularza logowania
-  await page.fill('input[name="email"]', "jakubopyd@gmail.com"); // Wpisanie adresu email
-  await page.fill('input[name="password"]', "zaq12wsx"); // Wpisanie hasła
+
+  await page.fill('input[name="email"]', "jakubopyd@gmail.com");
+  await page.fill('input[name="password"]', "zaq12wsx");
   await page.click('button[type="submit"]');
 
   await expect(page).toHaveURL("http://localhost:3000/");
