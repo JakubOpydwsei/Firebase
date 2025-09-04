@@ -17,7 +17,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-// console.log("Firebase app initialized:", app);
 
 if (typeof window !== "undefined" && isSupported()) {
   const analytics = getAnalytics(app);

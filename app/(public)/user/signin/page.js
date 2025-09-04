@@ -1,12 +1,11 @@
-"use client"; // Ensure this is a client-side component
+"use client";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 
-// Wrap the component in Suspense to handle client-side hooks like useSearchParams
 function Login() {
-  const [isClient, setIsClient] = useState(false); // To check if it's running on the client
+  const [isClient, setIsClient] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const auth = getAuth();
@@ -15,7 +14,7 @@ function Login() {
   const returnUrl = params.get("returnUrl");
 
   useEffect(() => {
-    setIsClient(true); // Update the client-side flag after mounting
+    setIsClient(true);
   }, []);
 
   const onSubmit = (e) => {
@@ -44,7 +43,7 @@ function Login() {
   };
 
   if (!isClient) {
-    return <div>Loading...</div>; // Render a fallback until the component is mounted
+    return <div>Loading...</div>;
   }
 
   return (
@@ -113,7 +112,6 @@ function Login() {
   );
 }
 
-// Wrap the Login component in Suspense for proper client-side handling
 export default function SuspenseLogin() {
   return (
     <Suspense fallback={<div>Loading...</div>}>

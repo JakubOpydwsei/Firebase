@@ -4,7 +4,6 @@ import { db } from "@/app/lib/firebase";
 
 function Product({ product, updateQuantity, removeMainProduct }) {
   const [relatedProductsData, setRelatedProductsData] = useState([]);
-  // console.log(product)
 
   useEffect(() => {
     const fetchRelatedProducts = async () => {
@@ -16,7 +15,6 @@ function Product({ product, updateQuantity, removeMainProduct }) {
             relatedProduct._key.path.segments[6]
           );
           const docSnap = await getDoc(docRef);
-          // console.log(docSnap.data())
           if (docSnap.exists()) {
             return { ...docSnap.data(), id: docSnap.id };
           }
@@ -109,7 +107,6 @@ function Product({ product, updateQuantity, removeMainProduct }) {
                 <p className="text-gray-300">Cena: 0 zł</p>
               )}
 
-              {/* {console.log(product.relatedProducts)} //////////////////////////////////// */}
               <div className="flex space-x-2">
                 <button
                   className="btn btn-primary"

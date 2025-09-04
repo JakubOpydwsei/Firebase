@@ -10,7 +10,6 @@ function VerifyEmail() {
 
   useEffect(() => {
     if (user) {
-      // Zapisz adres e-mail w stanie lokalnym
       setEmail(user.email);
       if (!user.emailVerified) {
         signOut(auth)
